@@ -1,4 +1,4 @@
-import { Server } from '@hocuspocus/server'
+import {connectedPayload, Server} from '@hocuspocus/server'
 import { Logger } from '@hocuspocus/extension-logger'
 import { SQLite } from '@hocuspocus/extension-sqlite'
 
@@ -11,11 +11,13 @@ const server = Server.configure({
     new SQLite(),
   ],
 
-  // async onAuthenticate(data) {
-  //   if (data.token !== 'my-access-token') {
-  //     throw new Error('Incorrect access token')
-  //   }
-  // },
+  async onConnect(data) {
+    console.log('🔮', data)
+  },
+
+  async onAuthenticate(data) {
+    console.log('ssssss', data, data.token)
+  },
 
   // Test error handling
   // async onConnect(data) {
@@ -36,21 +38,25 @@ const server = Server.configure({
   //   }, 1337))
   // },
 
-  // Intercept HTTP requests
-  // onRequest(data) {
-  //   return new Promise((resolve, reject) => {
-  //     const { response } = data
-  //     // Respond with your custom content
-  //     response.writeHead(200, { 'Content-Type': 'text/plain' })
-  //     response.end('This is my custom response, yay!')
+  async connected(data: connectedPayload): Promise<any> {
+    console.log('vvvvvvvvvvvvvvv', data)
+  },
 
-  //     // Rejecting the promise will stop the chain and no further
-  //     // onRequest hooks are run
-  //     return reject()
-  //   })
-  // },
+  // Intercept HTTP requests
+  onRequest(data) {
+    return new Promise((resolve, reject) => {
+      const { response } = data
+      console.log('Respond with your custom content')
+      response.writeHead(200, { 'Content-Type': 'text/plain' })
+      response.end('This is my custom response, yay!')
+
+      // Rejecting the promise will stop the chain and no further
+      // onRequest hooks are run
+      return reject()
+    })
+  },
 })
 
-// server.enableMessageLogging()
+server.enableMessageLogging()
 
 server.listen()

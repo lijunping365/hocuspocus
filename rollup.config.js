@@ -11,7 +11,6 @@ import babel from '@rollup/plugin-babel'
 import json from '@rollup/plugin-json'
 import sizes from '@atomico/rollup-plugin-sizes'
 import autoExternal from 'rollup-plugin-auto-external'
-import importAssertions from 'rollup-plugin-import-assertions'
 
 async function getSortedPackages(scope, ignore) {
   const packages = await getPackages(__dirname)
@@ -56,7 +55,6 @@ async function build(commandLineArgs) {
       }),
       sizes(),
       json(),
-      importAssertions(),
     ]
 
     config.push({
